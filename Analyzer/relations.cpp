@@ -137,11 +137,11 @@ void Relations::print() const {
    for(int i = 0; i < m_filenames.size(); ++i) {
       std::cout << m_filenames[i] << std::endl;
       std::vector<double> a = m_scale[i];
-      if(0 < a.size()) {
+      if(a.size() > 0) {
          std::sort(a.begin(), a.end());
          double scalePrev = a.at(0);
          int scaleCount = 0;
-         for(double scale : a) {
+        // for(double scale : a) {
             if(scale != scalePrev) {
                std::cout << scalePrev << " " << scaleCount << " times\n";
                scaleCount = 0;
@@ -161,7 +161,7 @@ void Relations::print() const {
          std::sort(a.begin(), a.end());
          double scalePrev = a.at(0);
          int scaleCount = 0;
-         for(double scale : a) {
+         //for(double scale : a) {
             if(scale != scalePrev) {
                std::cout << scalePrev << " " << scaleCount << " times\n";
                scaleCount = 0;
