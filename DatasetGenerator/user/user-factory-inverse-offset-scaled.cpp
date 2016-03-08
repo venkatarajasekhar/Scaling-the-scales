@@ -16,10 +16,10 @@ UserFactoryInverseOffsetScaled::UserFactoryInverseOffsetScaled(int const scaleSi
  * @return A generated user
  */
 User *UserFactoryInverseOffsetScaled::user() {
-   bool const inverse = m_inverseDist(m_generator) < m_inverseProb;
+   //bool const inverse = m_inverseDist(m_generator) < m_inverseProb;
    
    int const size = m_scaleDist(m_generator);
-   int const start = std::uniform_int_distribution<int>(1, scaleSize-size)(m_generator);
+   //int const start = std::uniform_int_distribution<int>(1, scaleSize-size)(m_generator);
    
    int const min = inverse ? start+size : start;
    int const max = inverse ? start : start+size;
