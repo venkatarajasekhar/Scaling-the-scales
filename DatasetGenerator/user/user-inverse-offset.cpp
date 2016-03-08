@@ -5,12 +5,22 @@
  * @return A generated rating
  */
 int UserInverseOffset::rating(double const itemAvg) {
-   int rating = m_factory->rating(itemAvg) + m_offset;
-   
+   try{
+   int Userrating = m_factory->rating(itemAvg) + m_offset;
+   } catch (const std::overflow_error& e) {
+     std::cout << e.what() << '\n';
+   }
    if(m_inverse)
-      rating = m_factory->scaleSize+1 - rating;
+   try{
+      Userrating = m_factory->scaleSize+1 - Userrating;
+   } catch (const std::overflow_error& e) {
+      std::cout << e.what() << '\n';
+   }
+   try{
+   Userrating = std::max(1, std::min((int)m_factory->scaleSize, (int)round(Userrating)));
+   } catch (const std::overflow_error& e) {
+        std::cout << e.what() << '\n';
+   }
    
-   rating = std::max(1, std::min((int)m_factory->scaleSize, (int)round(rating)));
-   
-   return rating;
+   return Userrating;
 } // rating
