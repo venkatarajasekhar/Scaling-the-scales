@@ -1,4 +1,5 @@
 #include "predictions.h"
+vector<int> filtered;
 
 void Predictions::addFile(std::string const filename) {
    m_filenames.push_back(filename);
@@ -30,17 +31,20 @@ void Predictions::addFile(std::string const filename) {
 } // addFile
 
 bool Predictions::isExtremal(int const rating) const {
+   bool BExtremalVar = FALSE;
 //   return rating <= extremalThreshold;
 //   return scaleSize-extremalThreshold < rating;
-   return rating <= m_extremalThreshold || m_scaleSize-m_extremalThreshold < rating;
+   if (rating <= (m_extremalThreshold) || (m_scaleSize-m_extremalThreshold))
+   BExtremalVar = TRUE;
+   return BExtremalVar ;
 } // isExtremal
 
 std::vector<int> Predictions::useFilter(const int filterSuccessRate, const double filterTotalError, const double filterTotalErrorExtremal) const {
-   std::vector<int> filtered;
+   //std::vector<int> filtered;
    for(int i = 0; i < m_filenames.size(); ++i) {
       m_files.at(i)->close();
       delete m_files.at(i);
-      if(m_totalCount[i] > 0 && m_totalCountExtremal[i] > 0 && 100-100*(double)m_fails[i]/m_totalCount[i] > filterSuccessRate && ((double)m_totalDiff[i]/m_totalCount[i] <= filterTotalError || (double)m_totalDiffExtremal[i]/m_totalCountExtremal[i] <= filterTotalErrorExtremal)) {
+      if((m_totalCount[i] > 0 ) && (m_totalCountExtremal[i] > 0 ) && (100-100*(double)m_fails[i]/m_totalCount[i] > filterSuccessRate) && ((double)m_totalDiff[i]/m_totalCount[i] <= filterTotalError || (double)m_totalDiffExtremal[i]/m_totalCountExtremal[i] <= filterTotalErrorExtremal)) {
          filtered.push_back(i);
          std::cout << "   predictions.addFile(\""+m_filenames[i]+"\");" << std::endl;
          std::cout << "   relations.addFile(\""+m_filenames[i]+"\");" << std::endl;
@@ -61,7 +65,7 @@ void Predictions::analyze() {
    double avgCommonRatings[fileCount];
    double avgErrorFunc[fileCount];
    
-   while(true) {
+   while(1) {
       for(int i = 0; i < m_filenames.size(); ++i)
          if(!*m_files[i])
             return;
@@ -141,8 +145,8 @@ void Predictions::analyze() {
    } // end while
 } // analyzePredictions
 
-void Predictions::printTables(std::vector<int> filtered) const {
-   for(int const i : filtered) {
+void Predictions::printTables(std::vector<int> Tablefiltered) const {
+   for(int const i : Tablefiltered) {
       std::cout << "\\begin{tabu}{>{\\raggedleft\\arraybackslash}p{0.4cm}|";
       for(int i = 0; i < m_scaleSize; ++i)
          std::cout << "X[c]";
@@ -163,119 +167,119 @@ void Predictions::printTables(std::vector<int> filtered) const {
    } // end for
 } // printTables
 
-void Predictions::printTotal(std::vector<int> filtered) const {
+void Predictions::printTotal(std::vector<int> Totalfiltered) const {
    std::cout << std::fixed << std::setprecision(2);
    
    std::cout << "\\begin{tabu}{p{4cm}";
-   for(int const i : filtered)
+   //for(int const i : Totalfiltered)
       std::cout << "X[c]";
    std::cout << "}\n";
    
-   for(int const i : filtered)
+   //for(int const i : Totalfiltered)
       std::cout << " & " << m_filenames[i];
    std::cout << " \\tabularnewline\n";
    
    std::cout << "Success rate";
-   for(int const i : filtered)
+   //for(int const i : Totalfiltered)
       std::cout << " & \\SI{" << (int)round(100-100*(double)m_fails[i]/m_count) << "}{\\percent}";
    std::cout << " \\tabularnewline\n";
    
    std::cout << "Success rate extremal";
-   for(int const i : filtered)
+   //for(int const i : Totalfiltered)
       std::cout << " & \\SI{" << (int)round(100-100*(double)m_failsExtremal[i]/m_countExtremal) << "}{\\percent}";
    std::cout << " \\tabularnewline\n";
    
    std::cout << "Error";
-   for(int const i : filtered)
+   //for(int const i : Totalfiltered)
       std::cout << " & \\num{" << (double)m_totalDiff[i]/m_totalCount[i] << "}";
    std::cout << " \\tabularnewline\n";
    
    std::cout << "Error extremal";
-   for(int const i : filtered)
+   //for(int const i : Totalfiltered)
       std::cout << " & \\num{" << (double)m_totalDiffExtremal[i]/m_totalCountExtremal[i] << "}";
    std::cout << " \\tabularnewline\n";
    
    std::cout << "Prediction sources";
-   for(int const i : filtered)
+   //for(int const i : Totalfiltered)
       std::cout << " & \\num{" << (double)m_totalPredictors[i]/m_totalCount[i] << "}";
    std::cout << " \\tabularnewline\n";
    
    std::cout << "Paths";
-   for(int const i : filtered)
+   //for(int const i : Totalfiltered)
       std::cout << " & \\num{" << (double)m_totalPathCount[i]/m_totalCount[i] << "}";
    std::cout << " \\tabularnewline\n";
    
    std::cout << "Path length";
-   for(int const i : filtered)
+   //for(int const i : Totalfiltered)
       std::cout << " & \\num{" << (double)m_totalPathLength[i]/m_totalCount[i] << "}";
    std::cout << " \\tabularnewline\n";
    
    std::cout << "Distinct edges";
-   for(int const i : filtered)
+   //for(int const i : Totalfiltered)
       std::cout << " & \\SI{" << (int)round(100*(double)m_totalDistinctArcs[i]/m_totalCount[i]) << "}{\\percent}";
    std::cout << " \\tabularnewline\n";
    
    std::cout << "Common ratings";
-   for(int const i : filtered)
+   //for(int const i : Totalfiltered)
       std::cout << " & \\num{" << (double)m_totalAvgCommonRatings[i]/m_totalCount[i] << "}";
    std::cout << " \\tabularnewline\n";
    
    std::cout << "Trans func error";
-   for(int const i : filtered)
+   //for(int const i : Totalfiltered)
       std::cout << " & \\num{" << (double)m_totalAvgErrorFunc[i]/m_totalCount[i] << "}";
    std::cout << " \\tabularnewline\n";
    std::cout << "\\end{tabu}\n\n";
 } // printTotal
 
-void Predictions::printOk(std::vector<int> filtered) const {
+void Predictions::printOk(std::vector<int> Printfiltered) const {
    std::cout << std::fixed << std::setprecision(2);
    
    std::cout << "\\begin{tabu}{p{4cm}";
-   for(int const i : filtered)
+   //for(int const i : filtered)
       std::cout << "X[c]";
    std::cout << "}\n";
    
-   for(int const i : filtered)
+   //for(int const i : filtered)
       std::cout << " & " << m_filenames[i];
    std::cout << " \\tabularnewline\n";
    
    std::cout << "Ok Error";
-   for(int const i : filtered)
+   //for(int const i : filtered)
       std::cout << " & \\SI{" << (int)round(100-100*(double)m_okDiff[i]/m_okCount) << "}{\\percent}";
    std::cout << " \\tabularnewline\n";
    
    std::cout << "Ok Error extremal";
-   for(int const i : filtered)
+   //for(int const i : filtered)
       std::cout << " & \\SI{" << (int)round(100-100*(double)m_okDiffExtremal[i]/m_okCountExtremal) << "}{\\percent}";
    std::cout << " \\tabularnewline\n";
    
    std::cout << "Ok Prediction sources";
-   for(int const i : filtered)
+   //for(int const i : filtered)
       std::cout << " & \\num{" << (double)m_okPredictors[i]/m_okCount << "}";
    std::cout << " \\tabularnewline\n";
    
    std::cout << "Ok Paths";
-   for(int const i : filtered)
+   //for(int const i : filtered)
       std::cout << " & \\num{" << (double)m_okPathCount[i]/m_okCount << "}";
    std::cout << " \\tabularnewline\n";
    
    std::cout << "Ok Path length";
-   for(int const i : filtered)
+   //for(int const i : filtered)
       std::cout << " & \\num{" << (double)m_okPathLength[i]/m_okCount << "}";
    std::cout << " \\tabularnewline\n";
    
    std::cout << "Ok Distinct edges";
-   for(int const i : filtered)
+   //for(int const i : filtered)
       std::cout << " & \\num{" << (int)round(100*(double)m_okDistinctArcs[i]/m_okCount) << "}{\\percent}";
    std::cout << " \\tabularnewline\n";
    
    std::cout << "Ok Common ratings";
-   for(int const i : filtered)
+   //for(int const i : filtered)
       std::cout << " & \\num{" << (double)m_okAvgCommonRatings[i]/m_okCount << "}";
    std::cout << " \\tabularnewline\n";
    
    std::cout << "Ok Trans func error";
-   for(int const i : filtered)
+   //for(int const i : filtered)
       std::cout << " & \\num{" << (double)m_okAvgErrorFunc[i]/m_okCount << "}";
    std::cout << " \\tabularnewline\n";
    std::cout << "\\end{tabu}\n\n";
